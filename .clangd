@@ -1,0 +1,39 @@
+# .clangd configuration for Zed editor
+# Specifies the location of compile_commands.json for Qt project
+
+CompileFlags:
+  # Path to compile_commands.json relative to this .clangd file
+  CompilationDatabase: build
+
+  # Add any additional flags that might be needed
+  Add:
+    - -std=c++23
+    # Qt-specific defines that might help with parsing
+    - -DQT_CORE_LIB
+    - -DQT_GUI_LIB
+    - -DQT_WIDGETS_LIB
+    - -DMINGW_HAS_SECURE_API=1
+    - -DUNICODE
+    - -D_UNICODE
+    - -DWIN32
+    - -DWIN64
+    - -D_ENABLE_EXTENDED_ALIGNED_STORAGE
+
+Diagnostics:
+  # Suppress some common Qt-related warnings if needed
+  UnusedIncludes: None
+  MissingIncludes: None
+
+Index:
+  # Background indexing for better performance
+  Background: Skip
+
+Hover:
+  # Show detailed information on hover
+  ShowAKA: Yes
+
+InlayHints:
+  # Enable helpful inlay hints
+  Enabled: true
+  ParameterNames: true
+  Type Deduction: true

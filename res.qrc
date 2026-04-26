@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Icon/music.png</file>
+        <file>Icon/next.png</file>
+        <file>Icon/order.png</file>
+        <file>Icon/play.png</file>
+        <file>Icon/prev.png</file>
+        <file>Icon/random.png</file>
+        <file>Icon/stop.png</file>
+    </qresource>
+</RCC>

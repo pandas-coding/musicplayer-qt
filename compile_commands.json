@@ -1,0 +1,20 @@
+[
+{
+  "directory": "C:/dev/github/cpp/musicplayer/build-test",
+  "command": "C:\\dev\\dev-tools\\LLVM\\LLVM-22\\LLVM\\bin\\clang++.exe -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN64 -isystem C:/dev/github/cpp/musicplayer/build-test/musicplayer_autogen/include -isystem C:/dev/Qt/qt-6.11/6.11.0/msvc2022_64/include/QtCore -isystem C:/dev/Qt/qt-6.11/6.11.0/msvc2022_64/include -isystem C:/dev/Qt/qt-6.11/6.11.0/msvc2022_64/mkspecs/win32-msvc -isystem C:/dev/Qt/qt-6.11/6.11.0/msvc2022_64/include/QtGui -isystem C:/dev/Qt/qt-6.11/6.11.0/msvc2022_64/include/QtWidgets -O0 -std=gnu++23 -D_DEBUG -D_DLL -D_MT -Xclang --dependent-lib=msvcrtd -g -Xclang -gcodeview -o CMakeFiles\\musicplayer.dir\\musicplayer_autogen\\mocs_compilation.cpp.obj -c C:\\dev\\github\\cpp\\musicplayer\\build-test\\musicplayer_autogen\\mocs_compilation.cpp",
+  "file": "C:/dev/github/cpp/musicplayer/build-test/musicplayer_autogen/mocs_compilation.cpp",
+  "output": "C:/dev/github/cpp/musicplayer/build-test/CMakeFiles/musicplayer.dir/musicplayer_autogen/mocs_compilation.cpp.obj"
+},
+{
+  "directory": "C:/dev/github/cpp/musicplayer/build-test",
+  "command": "C:\\dev\\dev-tools\\LLVM\\LLVM-22\\LLVM\\bin\\clang++.exe -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN64 -isystem C:/dev/github/cpp/musicplayer/build-test/musicplayer_autogen/include -isystem C:/dev/Qt/qt-6.11/6.11.0/msvc2022_64/include/QtCore -isystem C:/dev/Qt/qt-6.11/6.11.0/msvc2022_64/include -isystem C:/dev/Qt/qt-6.11/6.11.0/msvc2022_64/mkspecs/win32-msvc -isystem C:/dev/Qt/qt-6.11/6.11.0/msvc2022_64/include/QtGui -isystem C:/dev/Qt/qt-6.11/6.11.0/msvc2022_64/include/QtWidgets -O0 -std=gnu++23 -D_DEBUG -D_DLL -D_MT -Xclang --dependent-lib=msvcrtd -g -Xclang -gcodeview @CMakeFiles\\musicplayer.dir\\main.cpp.obj.modmap -o CMakeFiles\\musicplayer.dir\\main.cpp.obj -c C:\\dev\\github\\cpp\\musicplayer\\main.cpp",
+  "file": "C:/dev/github/cpp/musicplayer/main.cpp",
+  "output": "C:/dev/github/cpp/musicplayer/build-test/CMakeFiles/musicplayer.dir/main.cpp.obj"
+},
+{
+  "directory": "C:/dev/github/cpp/musicplayer/build-test",
+  "command": "C:\\dev\\dev-tools\\LLVM\\LLVM-22\\LLVM\\bin\\clang++.exe -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN64 -isystem C:/dev/github/cpp/musicplayer/build-test/musicplayer_autogen/include -isystem C:/dev/Qt/qt-6.11/6.11.0/msvc2022_64/include/QtCore -isystem C:/dev/Qt/qt-6.11/6.11.0/msvc2022_64/include -isystem C:/dev/Qt/qt-6.11/6.11.0/msvc2022_64/mkspecs/win32-msvc -isystem C:/dev/Qt/qt-6.11/6.11.0/msvc2022_64/include/QtGui -isystem C:/dev/Qt/qt-6.11/6.11.0/msvc2022_64/include/QtWidgets -O0 -std=gnu++23 -D_DEBUG -D_DLL -D_MT -Xclang --dependent-lib=msvcrtd -g -Xclang -gcodeview @CMakeFiles\\musicplayer.dir\\mainwindow.cpp.obj.modmap -o CMakeFiles\\musicplayer.dir\\mainwindow.cpp.obj -c C:\\dev\\github\\cpp\\musicplayer\\mainwindow.cpp",
+  "file": "C:/dev/github/cpp/musicplayer/mainwindow.cpp",
+  "output": "C:/dev/github/cpp/musicplayer/build-test/CMakeFiles/musicplayer.dir/mainwindow.cpp.obj"
+}
+]
