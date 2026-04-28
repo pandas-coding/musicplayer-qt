@@ -19,6 +19,7 @@ public:
   ~MainWindow() override;
 
 private:
+  void setBackground(const QString &filename);
   void setButtonStyle(QPushButton *button, const QString &filename);
   void initButtons();
 
