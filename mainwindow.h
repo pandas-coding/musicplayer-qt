@@ -1,10 +1,10 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
-#include <QPushButton>
-#include <QMediaPlayer>
 #include <QAudioOutput>
+#include <QMainWindow>
+#include <QMediaPlayer>
+#include <QPushButton>
 #include <QUrl>
 
 QT_BEGIN_NAMESPACE
@@ -19,6 +19,9 @@ class MainWindow : public QMainWindow {
 public:
   explicit MainWindow(QWidget *parent = nullptr);
   ~MainWindow() override;
+
+public slots:
+  void handlePlaySlot();
 
 private:
   void setBackground(const QString &filename);

@@ -5,8 +5,9 @@
 #include <QPalette>
 #include <QPixmap>
 #include <QSize>
-#include <qmediaplayer.h>
-#include <qurl.h>
+#include <QMediaPlayer>
+#include <QPushButton>
+#include <QUrl>
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -59,6 +60,20 @@ void MainWindow::initButtons()
     setButtonStyle(ui->nextButton, ":/Icon/next.png");
     setButtonStyle(ui->modeButton, ":/Icon/order.png");
     setButtonStyle(ui->listButton, ":/Icon/music.png");
+    
+    connect(ui->playButton, &QPushButton::clicked, this, &MainWindow::handlePlaySlot);
+}
+
+void MainWindow::handlePlaySlot()
+{
+    if (m_player->playbackState() == QMediaPlayer::PlayingState)
+    {
+        m_player->pause();
+        ui->playButton->setIcon(QIcon(":/Icon/play.png"));
+    } else {
+        m_player->play();
+        ui->playButton->setIcon(QIcon(":/Icon/pause.png"));
+    }
 }
 
 MainWindow::~MainWindow()
