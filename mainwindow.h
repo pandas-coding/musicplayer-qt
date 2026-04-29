@@ -2,8 +2,10 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <qobject.h>
-#include <qpushbutton.h>
+#include <QPushButton>
+#include <QMediaPlayer>
+#include <QAudioOutput>
+#include <QUrl>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -25,5 +27,6 @@ private:
 
 private:
   Ui::MainWindow *ui;
+  QMediaPlayer *m_player;
 };
 #endif // MAINWINDOW_H

@@ -1,19 +1,25 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <qnamespace.h>
-#include <qobject.h>
-#include <qpalette.h>
-#include <qpixmap.h>
-#include <qsize.h>
+
 #include <QIcon>
-#include <QPixmap>
 #include <QPalette>
+#include <QPixmap>
+#include <QSize>
+#include <qmediaplayer.h>
+#include <qurl.h>
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    
+    m_player = new QMediaPlayer(this);
+    auto *audioOutput = new QAudioOutput(this);
+    m_player->setAudioOutput(audioOutput);
+    m_player->setSource(QUrl::fromLocalFile("./asserts/飞行艇.mp3"));
+    audioOutput->setVolume(0.3);
 
     setWindowTitle("MusicPlayer");
     
@@ -21,6 +27,8 @@ MainWindow::MainWindow(QWidget *parent)
     setBackground(":/Image/background1.jpg");
     
     initButtons();
+
+    m_player->play();
 }
 
 void MainWindow::setBackground(const QString &filename)
