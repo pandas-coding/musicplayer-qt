@@ -14,6 +14,12 @@ class MainWindow;
 }
 QT_END_NAMESPACE
 
+enum PLAY_MODE {
+  ORDER_MODE,
+  RANDOM_MODE,
+  CIRCLE_MODE,
+};
+
 class MainWindow : public QMainWindow {
   Q_OBJECT
 
@@ -23,6 +29,7 @@ public:
 
 public slots:
   void handlePlaySlot();
+  void handleModeSlot();
 
 private:
   void setBackground(const QString &filename);
@@ -34,5 +41,7 @@ private:
 private:
   Ui::MainWindow *ui;
   QMediaPlayer *m_player;
+  // current play mode
+  PLAY_MODE m_playMode;
 };
 #endif // MAINWINDOW_H

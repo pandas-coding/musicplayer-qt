@@ -13,11 +13,14 @@
 #include <QSize>
 #include <QUrl>
 #include <qdir.h>
+#include <qicon.h>
 #include <qmessagebox.h>
 #include <qobject.h>
+#include <qpushbutton.h>
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::MainWindow) {
+    : QMainWindow(parent), m_playMode(PLAY_MODE::ORDER_MODE),
+      ui(new Ui::MainWindow) {
   ui->setupUi(this);
 
   m_player = new QMediaPlayer(this);
@@ -66,8 +69,10 @@ void MainWindow::initButtons() {
   setButtonStyle(ui->modeButton, ":/Icon/order.png");
   setButtonStyle(ui->listButton, ":/Icon/music.png");
 
+  /* bingding buttons signals with slots */
   connect(ui->playButton, &QPushButton::clicked, this,
           &MainWindow::handlePlaySlot);
+  connect(ui->modeButton, &QPushButton::clicked, this, &MainWindow::handleModeSlot);
 }
 
 void MainWindow::handlePlaySlot() {
@@ -80,6 +85,27 @@ void MainWindow::handlePlaySlot() {
   }
 }
 
+void MainWindow::handleModeSlot() {
+    switch (m_playMode) {
+        case PLAY_MODE::ORDER_MODE: {
+            m_playMode = PLAY_MODE::RANDOM_MODE;
+            ui->modeButton->setIcon(QIcon(":/Icon/random.png"));
+            break;
+        }
+        case PLAY_MODE::RANDOM_MODE: {
+            m_playMode = PLAY_MODE::CIRCLE_MODE;
+            ui->modeButton->setIcon(QIcon(":/Icon/list.png"));
+            break;
+        }
+        case PLAY_MODE::CIRCLE_MODE: {
+            m_playMode = PLAY_MODE::ORDER_MODE;
+            ui->modeButton->setIcon(QIcon(":/Icon/order.png"));
+            break;
+        }
+    }
+    
+}
+
 void MainWindow::loadAppointMusicFoler(const QString &filepath) {
   QDir dir(filepath);
   if (dir.exists() == false) {
@@ -90,7 +116,7 @@ void MainWindow::loadAppointMusicFoler(const QString &filepath) {
   auto fileList = dir.entryInfoList(QDir::Files);
   for (auto file : fileList) {
     if (file.suffix() == "mp3") {
-        ui->musicList->addItem(file.baseName());
+      ui->musicList->addItem(file.baseName());
     }
   }
 }
