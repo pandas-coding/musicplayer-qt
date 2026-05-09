@@ -30,13 +30,14 @@ public:
 public slots:
   void handlePlaySlot();
   void handleModeSlot();
+  void handleNextSlot();
 
 private:
   void setBackground(const QString &filename);
   void setButtonStyle(QPushButton *button, const QString &filename);
   void initButtons();
   // load mucic list folder
-  void loadAppointMusicFoler(const QString &filepath);
+  void loadAppointMusicFolder(const QString &filepath);
 
 private:
   Ui::MainWindow *ui;

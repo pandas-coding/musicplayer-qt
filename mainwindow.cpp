@@ -12,11 +12,14 @@
 #include <QPushButton>
 #include <QSize>
 #include <QUrl>
+#include <cstddef>
+#include <cstdlib>
 #include <qdir.h>
 #include <qicon.h>
 #include <qmessagebox.h>
 #include <qobject.h>
 #include <qpushbutton.h>
+#include <time.h>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), m_playMode(PLAY_MODE::ORDER_MODE),
@@ -39,7 +42,10 @@ MainWindow::MainWindow(QWidget *parent)
   m_player->play();
 
   QString musicPath = "./asserts";
-  loadAppointMusicFoler(musicPath);
+  loadAppointMusicFolder(musicPath);
+
+  // setup random number seed.
+  srand(time(NULL));
 }
 
 void MainWindow::setBackground(const QString &filename) {
@@ -72,7 +78,10 @@ void MainWindow::initButtons() {
   /* bingding buttons signals with slots */
   connect(ui->playButton, &QPushButton::clicked, this,
           &MainWindow::handlePlaySlot);
-  connect(ui->modeButton, &QPushButton::clicked, this, &MainWindow::handleModeSlot);
+  connect(ui->modeButton, &QPushButton::clicked, this,
+          &MainWindow::handleModeSlot);
+  connect(ui->nextButton, &QPushButton::clicked, this,
+          &MainWindow::handleNextSlot);
 }
 
 void MainWindow::handlePlaySlot() {
@@ -86,27 +95,54 @@ void MainWindow::handlePlaySlot() {
 }
 
 void MainWindow::handleModeSlot() {
-    switch (m_playMode) {
-        case PLAY_MODE::ORDER_MODE: {
-            m_playMode = PLAY_MODE::RANDOM_MODE;
-            ui->modeButton->setIcon(QIcon(":/Icon/random.png"));
-            break;
-        }
-        case PLAY_MODE::RANDOM_MODE: {
-            m_playMode = PLAY_MODE::CIRCLE_MODE;
-            ui->modeButton->setIcon(QIcon(":/Icon/list.png"));
-            break;
-        }
-        case PLAY_MODE::CIRCLE_MODE: {
-            m_playMode = PLAY_MODE::ORDER_MODE;
-            ui->modeButton->setIcon(QIcon(":/Icon/order.png"));
-            break;
-        }
-    }
-    
+  switch (m_playMode) {
+  case PLAY_MODE::ORDER_MODE: {
+    m_playMode = PLAY_MODE::RANDOM_MODE;
+    ui->modeButton->setIcon(QIcon(":/Icon/random.png"));
+    break;
+  }
+  case PLAY_MODE::RANDOM_MODE: {
+    m_playMode = PLAY_MODE::CIRCLE_MODE;
+    ui->modeButton->setIcon(QIcon(":/Icon/list.png"));
+    break;
+  }
+  case PLAY_MODE::CIRCLE_MODE: {
+    m_playMode = PLAY_MODE::ORDER_MODE;
+    ui->modeButton->setIcon(QIcon(":/Icon/order.png"));
+    break;
+  }
+  }
 }
 
-void MainWindow::loadAppointMusicFoler(const QString &filepath) {
+void MainWindow::handleNextSlot() {
+  int currentIndex = ui->musicList->currentRow();
+  int nextIndex = 0;
+
+  switch (m_playMode) {
+  case PLAY_MODE::ORDER_MODE: {
+    nextIndex = (currentIndex + 1) % ui->musicList->count();
+    break;
+  }
+  case PLAY_MODE::RANDOM_MODE: {
+    // using do-while to avoid the case where the next index is the same as the
+    // current index.
+    int cnt = 0;
+    do {
+      nextIndex = rand() % ui->musicList->count();
+      cnt++;
+    } while ((currentIndex == nextIndex) && (cnt <= 3));
+    break;
+  }
+  case PLAY_MODE::CIRCLE_MODE: {
+    nextIndex = currentIndex;
+    break;
+  }
+  }
+
+  ui->musicList->setCurrentRow(nextIndex);
+}
+
+void MainWindow::loadAppointMusicFolder(const QString &filepath) {
   QDir dir(filepath);
   if (dir.exists() == false) {
     QMessageBox::warning(this, "文件夹", "文件夹打开失败");
@@ -119,6 +155,9 @@ void MainWindow::loadAppointMusicFoler(const QString &filepath) {
       ui->musicList->addItem(file.baseName());
     }
   }
+
+  // default load the first music
+  ui->musicList->setCurrentRow(0);
 }
 
 MainWindow::~MainWindow() { delete ui; }
