@@ -31,6 +31,7 @@ public slots:
   void handlePlaySlot();
   void handleModeSlot();
   void handleNextSlot();
+  void handlePrevSlot();
 
 private:
   void setBackground(const QString &filename);

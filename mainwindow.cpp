@@ -82,6 +82,8 @@ void MainWindow::initButtons() {
           &MainWindow::handleModeSlot);
   connect(ui->nextButton, &QPushButton::clicked, this,
           &MainWindow::handleNextSlot);
+  connect(ui->prevButton, &QPushButton::clicked, this,
+          &MainWindow::handlePrevSlot);
 }
 
 void MainWindow::handlePlaySlot() {
@@ -140,6 +142,32 @@ void MainWindow::handleNextSlot() {
   }
 
   ui->musicList->setCurrentRow(nextIndex);
+}
+
+void MainWindow::handlePrevSlot() {
+  int currentIndex = ui->musicList->currentRow();
+  int prevIndex = 0;
+
+  switch (m_playMode) {
+  case PLAY_MODE::ORDER_MODE: {
+    prevIndex =
+        (currentIndex - 1 + ui->musicList->count()) % ui->musicList->count();
+    break;
+  }
+  case PLAY_MODE::RANDOM_MODE: {
+    int cnt = 0;
+    do {
+      prevIndex = rand() % ui->musicList->count();
+    } while (currentIndex == prevIndex && cnt <= 3);
+    break;
+  }
+  case PLAY_MODE::CIRCLE_MODE: {
+    prevIndex = currentIndex;
+    break;
+  }
+  }
+
+  ui->musicList->setCurrentRow(prevIndex);
 }
 
 void MainWindow::loadAppointMusicFolder(const QString &filepath) {
