@@ -14,12 +14,16 @@
 #include <QUrl>
 #include <cstddef>
 #include <cstdlib>
+#include <qdebug.h>
 #include <qdir.h>
 #include <qicon.h>
+#include <qlogging.h>
 #include <qmessagebox.h>
 #include <qobject.h>
 #include <qpushbutton.h>
+#include <qurl.h>
 #include <time.h>
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), m_playMode(PLAY_MODE::ORDER_MODE),
@@ -41,8 +45,8 @@ MainWindow::MainWindow(QWidget *parent)
 
   m_player->play();
 
-  QString musicPath = "./asserts";
-  loadAppointMusicFolder(musicPath);
+  m_musicPath = "./asserts/";
+  loadAppointMusicFolder(m_musicPath);
 
   // setup random number seed.
   srand(time(NULL));
@@ -142,6 +146,8 @@ void MainWindow::handleNextSlot() {
   }
 
   ui->musicList->setCurrentRow(nextIndex);
+
+  startPlayMusic();
 }
 
 void MainWindow::handlePrevSlot() {
@@ -168,6 +174,17 @@ void MainWindow::handlePrevSlot() {
   }
 
   ui->musicList->setCurrentRow(prevIndex);
+
+  startPlayMusic();
+}
+
+void MainWindow::startPlayMusic() {
+    auto musicName = ui->musicList->currentItem()->text();
+    qDebug() << musicName << Qt::endl;
+    QString musicAbsolutePath = m_musicPath + musicName + ".mp3";
+    
+    m_player->setSource(QUrl::fromLocalFile(musicAbsolutePath));
+    handlePlaySlot();
 }
 
 void MainWindow::loadAppointMusicFolder(const QString &filepath) {

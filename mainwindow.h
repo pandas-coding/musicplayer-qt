@@ -39,11 +39,15 @@ private:
   void initButtons();
   // load mucic list folder
   void loadAppointMusicFolder(const QString &filepath);
+  // play music
+  void startPlayMusic();
 
 private:
   Ui::MainWindow *ui;
   QMediaPlayer *m_player;
   // current play mode
   PLAY_MODE m_playMode;
+  // music absolute path
+  QString m_musicPath;
 };
 #endif // MAINWINDOW_H
