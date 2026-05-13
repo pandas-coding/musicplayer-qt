@@ -79,6 +79,8 @@ void MainWindow::initButtons() {
   setButtonStyle(ui->modeButton, ":/Icon/order.png");
   setButtonStyle(ui->listButton, ":/Icon/music.png");
 
+  ui->musicList->setStyleSheet("QListWidget { border: none; border-radius: 4px; background-color: rgba(255, 255, 255, 0.8); }");
+
   /* bingding buttons signals with slots */
   connect(ui->playButton, &QPushButton::clicked, this,
           &MainWindow::handlePlaySlot);
@@ -88,6 +90,7 @@ void MainWindow::initButtons() {
           &MainWindow::handleNextSlot);
   connect(ui->prevButton, &QPushButton::clicked, this,
           &MainWindow::handlePrevSlot);
+  connect(ui->listButton, &QPushButton::clicked, this, &MainWindow::handleMusicListSlot);
 }
 
 void MainWindow::handlePlaySlot() {
@@ -185,6 +188,10 @@ void MainWindow::startPlayMusic() {
     
     m_player->setSource(QUrl::fromLocalFile(musicAbsolutePath));
     handlePlaySlot();
+}
+
+void MainWindow::handleMusicListSlot() {
+  
 }
 
 void MainWindow::loadAppointMusicFolder(const QString &filepath) {
