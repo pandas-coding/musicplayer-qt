@@ -7,6 +7,7 @@
 #include <QPushButton>
 #include <QUrl>
 #include <qobject.h>
+#include <qwidget.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -42,6 +43,10 @@ private:
   void loadAppointMusicFolder(const QString &filepath);
   // play music
   void startPlayMusic();
+  // music list widget show transparent
+  void showMusicListAnimation(QWidget *window);
+  // music list widget hide transparent
+  void hideMusicListAnimation(QWidget *window);
 
 private:
   Ui::MainWindow *ui;
@@ -50,5 +55,7 @@ private:
   PLAY_MODE m_playMode;
   // music absolute path
   QString m_musicPath;
+  // music list  visibility
+  bool m_musicListVisible;
 };
 #endif // MAINWINDOW_H

@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <QDebug>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
@@ -9,6 +10,7 @@
 #include <QMessageBox>
 #include <QPalette>
 #include <QPixmap>
+#include <QPropertyAnimation>
 #include <QPushButton>
 #include <QSize>
 #include <QUrl>
@@ -16,18 +18,21 @@
 #include <cstdlib>
 #include <qdebug.h>
 #include <qdir.h>
+#include <qeventloop.h>
 #include <qicon.h>
 #include <qlogging.h>
 #include <qmessagebox.h>
 #include <qobject.h>
+#include <qpoint.h>
+#include <qpropertyanimation.h>
 #include <qpushbutton.h>
 #include <qurl.h>
+#include <qwidget.h>
 #include <time.h>
-#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), m_playMode(PLAY_MODE::ORDER_MODE),
-      ui(new Ui::MainWindow) {
+      m_musicListVisible(false), ui(new Ui::MainWindow) {
   ui->setupUi(this);
 
   m_player = new QMediaPlayer(this);
@@ -79,7 +84,12 @@ void MainWindow::initButtons() {
   setButtonStyle(ui->modeButton, ":/Icon/order.png");
   setButtonStyle(ui->listButton, ":/Icon/music.png");
 
-  ui->musicList->setStyleSheet("QListWidget { border: none; border-radius: 4px; background-color: rgba(255, 255, 255, 0.8); }");
+  ui->musicList->setStyleSheet(
+      "QListWidget { border: none; border-radius: 4px; background-color: "
+      "rgba(255, 255, 255, 0.8); }");
+
+  /// init music list visibility as hidden.
+  ui->musicList->hide();
 
   /* bingding buttons signals with slots */
   connect(ui->playButton, &QPushButton::clicked, this,
@@ -90,7 +100,8 @@ void MainWindow::initButtons() {
           &MainWindow::handleNextSlot);
   connect(ui->prevButton, &QPushButton::clicked, this,
           &MainWindow::handlePrevSlot);
-  connect(ui->listButton, &QPushButton::clicked, this, &MainWindow::handleMusicListSlot);
+  connect(ui->listButton, &QPushButton::clicked, this,
+          &MainWindow::handleMusicListSlot);
 }
 
 void MainWindow::handlePlaySlot() {
@@ -182,16 +193,50 @@ void MainWindow::handlePrevSlot() {
 }
 
 void MainWindow::startPlayMusic() {
-    auto musicName = ui->musicList->currentItem()->text();
-    qDebug() << musicName << Qt::endl;
-    QString musicAbsolutePath = m_musicPath + musicName + ".mp3";
-    
-    m_player->setSource(QUrl::fromLocalFile(musicAbsolutePath));
-    handlePlaySlot();
+  auto musicName = ui->musicList->currentItem()->text();
+  qDebug() << musicName << Qt::endl;
+  QString musicAbsolutePath = m_musicPath + musicName + ".mp3";
+
+  m_player->setSource(QUrl::fromLocalFile(musicAbsolutePath));
+  handlePlaySlot();
 }
 
 void MainWindow::handleMusicListSlot() {
-  
+  if (false == m_musicListVisible) {
+    ui->musicList->show();
+    showMusicListAnimation(ui->musicList);
+    m_musicListVisible = true;
+  } else {
+    hideMusicListAnimation(ui->musicList);
+    ui->musicList->hide();
+    m_musicListVisible = false;
+  }
+}
+
+void MainWindow::showMusicListAnimation(QWidget *widget) {
+  QPropertyAnimation animation(widget, "pos");
+  animation.setDuration(100);
+  animation.setStartValue(QPoint(this->width(), 0));
+  animation.setEndValue(QPoint(this->width() - ui->musicList->width(), 0));
+  animation.start();
+
+  // waiting for animation finished
+  QEventLoop loop;
+  connect(&animation, &QPropertyAnimation::finished, &loop, &QEventLoop::quit);
+  loop.exec();
+}
+
+void MainWindow::hideMusicListAnimation(QWidget *window) {
+  QPropertyAnimation animation(window, "pos");
+  animation.setDuration(100);
+  animation.setStartValue(QPoint(this->width() - ui->musicList->width(), 0));
+  animation.setEndValue(QPoint(this->width(), 0));
+  animation.start();
+
+  // waiting for animation finished
+  QEventLoop loop;
+  connect(&animation, &QPropertyAnimation::finished, &loop, &QEventLoop::quit);
+  loop.exec();
 }
 
 void MainWindow::loadAppointMusicFolder(const QString &filepath) {
