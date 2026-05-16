@@ -27,6 +27,7 @@
 #include <qpoint.h>
 #include <qpropertyanimation.h>
 #include <qpushbutton.h>
+#include <qslider.h>
 #include <qurl.h>
 #include <qwidget.h>
 #include <time.h>
@@ -103,13 +104,16 @@ void MainWindow::initButtons() {
           &MainWindow::handlePrevSlot);
   connect(ui->listButton, &QPushButton::clicked, this,
           &MainWindow::handleMusicListSlot);
+
   // handle music play progress
   connect(m_player, &QMediaPlayer::positionChanged, this,
           &MainWindow::handleMusicProgressSlot);
-
   // handle music total time
   connect(m_player, &QMediaPlayer::durationChanged, this,
           &MainWindow::handleMusicDuration);
+  // handle drag progress bar
+  connect(ui->progressBar, &QSlider::sliderMoved, m_player,
+          &QMediaPlayer::setPosition);
 }
 
 void MainWindow::handlePlaySlot() {
