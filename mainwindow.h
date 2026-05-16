@@ -34,6 +34,8 @@ public slots:
   void handleNextSlot();
   void handlePrevSlot();
   void handleMusicListSlot();
+  void handleMusicProgressSlot(int progress);
+  void handleMusicDuration(int duration);
 
 private:
   void setBackground(const QString &filename);

@@ -21,6 +21,7 @@
 #include <qeventloop.h>
 #include <qicon.h>
 #include <qlogging.h>
+#include <qmediaplayer.h>
 #include <qmessagebox.h>
 #include <qobject.h>
 #include <qpoint.h>
@@ -102,6 +103,13 @@ void MainWindow::initButtons() {
           &MainWindow::handlePrevSlot);
   connect(ui->listButton, &QPushButton::clicked, this,
           &MainWindow::handleMusicListSlot);
+  // handle music play progress
+  connect(m_player, &QMediaPlayer::positionChanged, this,
+          &MainWindow::handleMusicProgressSlot);
+
+  // handle music total time
+  connect(m_player, &QMediaPlayer::durationChanged, this,
+          &MainWindow::handleMusicDuration);
 }
 
 void MainWindow::handlePlaySlot() {
@@ -211,6 +219,14 @@ void MainWindow::handleMusicListSlot() {
     ui->musicList->hide();
     m_musicListVisible = false;
   }
+}
+
+void MainWindow::handleMusicProgressSlot(int progres_ms) {
+  ui->progressBar->setValue(progres_ms);
+}
+
+void MainWindow::handleMusicDuration(int duration_ms) {
+  ui->progressBar->setRange(0, duration_ms);
 }
 
 void MainWindow::showMusicListAnimation(QWidget *widget) {
