@@ -13,9 +13,11 @@
 #include <QPropertyAnimation>
 #include <QPushButton>
 #include <QSize>
+#include <QTime>
 #include <QUrl>
 #include <cstddef>
 #include <cstdlib>
+#include <qdatetime.h>
 #include <qdebug.h>
 #include <qdir.h>
 #include <qeventloop.h>
@@ -227,10 +229,20 @@ void MainWindow::handleMusicListSlot() {
 
 void MainWindow::handleMusicProgressSlot(int progres_ms) {
   ui->progressBar->setValue(progres_ms);
+
+  // set music progress time
+  QTime progressTime = QTime::fromMSecsSinceStartOfDay(progres_ms);
+  QString progressTimeStr = progressTime.toString("mm:ss");
+  ui->currentTime->setText(progressTimeStr);
 }
 
 void MainWindow::handleMusicDuration(int duration_ms) {
   ui->progressBar->setRange(0, duration_ms);
+
+  // set music total time
+  QTime durationTime = QTime::fromMSecsSinceStartOfDay(duration_ms);
+  QString totalTime = durationTime.toString("mm:ss");
+  ui->totalTime->setText(totalTime);
 }
 
 void MainWindow::showMusicListAnimation(QWidget *widget) {
