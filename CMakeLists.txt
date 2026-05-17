@@ -21,6 +21,7 @@ add_executable(musicplayer main.cpp
         mainwindow.cpp
         mainwindow.ui
         res.qrc
+        songitem.h songitem.cpp songitem.ui
         )
 target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt6::Core

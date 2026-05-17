@@ -11,5 +11,7 @@
         <file>Image/background1.jpg</file>
         <file>Image/background2.jpg</file>
         <file>Image/background3.jpg</file>
+        <file>Icon/favorite.png</file>
+        <file>Icon/unfavorite.png</file>
     </qresource>
 </RCC>
