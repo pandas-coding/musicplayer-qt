@@ -28,4 +28,20 @@ void SongItem::handleFavoriteSlot() {
   }
 }
 
+void SongItem::setAlboumPixPic(const QPixmap &pixmap) {
+  ui->albumLabel->setPixmap(pixmap.scaled(60, 60, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+}
+void SongItem::setMusicName(const QString &name) {
+  ui->musicNameLabel->setText(name);
+ 
+  m_musicName = name;
+}
+void SongItem::setArtist(const QString &artist) { m_artist = artist; }
+void SongItem::setDuration(const QString &duration) {
+  ui->durationLabel->setText(duration);
+  m_duration = duration;
+}
+
+QSize SongItem::sizeHint() const { return QSize(300, 70); }
+
 SongItem::~SongItem() { delete ui; }

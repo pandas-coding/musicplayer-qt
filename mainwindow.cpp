@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include "songitem.h"
 #include <QDebug>
 #include <QDir>
 #include <QFile>
@@ -22,10 +23,12 @@
 #include <qdir.h>
 #include <qeventloop.h>
 #include <qicon.h>
+#include <qlistwidget.h>
 #include <qlogging.h>
 #include <qmediaplayer.h>
 #include <qmessagebox.h>
 #include <qobject.h>
+#include <qpixmap.h>
 #include <qpoint.h>
 #include <qpropertyanimation.h>
 #include <qpushbutton.h>
@@ -271,6 +274,18 @@ void MainWindow::hideMusicListAnimation(QWidget *window) {
   loop.exec();
 }
 
+void MainWindow::setSongItem(SongItem *songItem, const QString &musicName,
+                             const QString &musicPath) {
+  qDebug() << musicName << Qt::endl;
+  songItem->setMusicName(musicName);
+  // setup song album pic
+  QString albumPic = musicPath + ".jpg";
+  songItem->setAlboumPixPic(QPixmap(albumPic));
+
+  // setup music duration
+  // songItem->setDuration();
+}
+
 void MainWindow::loadAppointMusicFolder(const QString &filepath) {
   QDir dir(filepath);
   if (dir.exists() == false) {
@@ -281,7 +296,19 @@ void MainWindow::loadAppointMusicFolder(const QString &filepath) {
   auto fileList = dir.entryInfoList(QDir::Files);
   for (auto file : fileList) {
     if (file.suffix() == "mp3") {
-      ui->musicList->addItem(file.baseName());
+      // path of music
+      QString filePath = m_musicPath + file.baseName();
+      
+      auto *listItem = new QListWidgetItem(ui->musicList);
+      
+      // setup song item
+      auto *songItem = new SongItem(this);
+      setSongItem(songItem, file.fileName(), filePath);
+
+      listItem->setSizeHint(songItem->sizeHint());
+
+      ui->musicList->setItemWidget(listItem, songItem);
+      ui->musicList->addItem(listItem);
     }
   }
 

@@ -1,11 +1,13 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "songitem.h"
 #include <QAudioOutput>
 #include <QMainWindow>
 #include <QMediaPlayer>
 #include <QPushButton>
 #include <QUrl>
+#include <qhashfunctions.h>
 #include <qobject.h>
 #include <qwidget.h>
 
@@ -49,6 +51,9 @@ private:
   void showMusicListAnimation(QWidget *window);
   // music list widget hide transparent
   void hideMusicListAnimation(QWidget *window);
+  // setup music item
+  void setSongItem(SongItem *songItem, const QString &musicName,
+                   const QString &musicPath);
 
 private:
   Ui::MainWindow *ui;

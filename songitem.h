@@ -25,6 +25,8 @@ public:
   void setArtist(const QString &artist);
   void setDuration(const QString &duration);
 
+  QSize sizeHint() const override;
+
 private:
   Ui::SongItem *ui;
   // is marked as favorite
