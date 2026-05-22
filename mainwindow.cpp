@@ -3,10 +3,12 @@
 
 #include "songitem.h"
 #include <QDebug>
+#include <QCoreApplication>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QIcon>
+#include <QMediaMetaData>
 #include <QMediaPlayer>
 #include <QMessageBox>
 #include <QPalette>
@@ -22,6 +24,7 @@
 #include <qdebug.h>
 #include <qdir.h>
 #include <qeventloop.h>
+#include <qhashfunctions.h>
 #include <qicon.h>
 #include <qlistwidget.h>
 #include <qlogging.h>
@@ -282,8 +285,22 @@ void MainWindow::setSongItem(SongItem *songItem, const QString &musicName,
   QString albumPic = musicPath + ".jpg";
   songItem->setAlboumPixPic(QPixmap(albumPic));
 
-  // setup music duration
-  // songItem->setDuration();
+  QString musicAbsPath = musicPath + ".mp3";
+  m_player->setSource(QUrl::fromLocalFile(musicAbsPath));
+  
+  QEventLoop loop;
+  QObject::connect(m_player, &QMediaPlayer::mediaStatusChanged, &loop, [&](QMediaPlayer::MediaStatus status) {
+      if (status == QMediaPlayer::LoadedMedia) {
+          loop.quit();
+      }
+  } );
+  loop.exec();
+
+  // setup music duration text
+  QMediaMetaData meta = m_player->metaData();
+  int duration = meta.value(QMediaMetaData::Duration).toInt();
+  auto durationTime = QTime::fromMSecsSinceStartOfDay(duration);
+  songItem->setDuration(durationTime.toString("mm:ss"));
 }
 
 void MainWindow::loadAppointMusicFolder(const QString &filepath) {
@@ -303,8 +320,9 @@ void MainWindow::loadAppointMusicFolder(const QString &filepath) {
       
       // setup song item
       auto *songItem = new SongItem(this);
-      setSongItem(songItem, file.fileName(), filePath);
+      setSongItem(songItem, file.baseName(), filePath);
 
+      // set song item size fit content
       listItem->setSizeHint(songItem->sizeHint());
 
       ui->musicList->setItemWidget(listItem, songItem);
