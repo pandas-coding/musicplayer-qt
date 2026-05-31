@@ -20,6 +20,7 @@
 #include <QUrl>
 #include <cstddef>
 #include <cstdlib>
+#include <qcontainerfwd.h>
 #include <qdatetime.h>
 #include <qdebug.h>
 #include <qdir.h>
@@ -31,6 +32,7 @@
 #include <qmediaplayer.h>
 #include <qmessagebox.h>
 #include <qobject.h>
+#include <qpicture.h>
 #include <qpixmap.h>
 #include <qpoint.h>
 #include <qpropertyanimation.h>
@@ -38,7 +40,12 @@
 #include <qslider.h>
 #include <qurl.h>
 #include <qwidget.h>
+#include <string>
 #include <time.h>
+
+// initieal music lyric empty lines
+#define LYRIC_LINE   6
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), m_playMode(PLAY_MODE::ORDER_MODE),
@@ -48,7 +55,6 @@ MainWindow::MainWindow(QWidget *parent)
   m_player = new QMediaPlayer(this);
   auto *audioOutput = new QAudioOutput(this);
   m_player->setAudioOutput(audioOutput);
-  m_player->setSource(QUrl::fromLocalFile("./asserts/飞行艇.mp3"));
   audioOutput->setVolume(0.3);
 
   setWindowTitle("MusicPlayer");
@@ -58,10 +64,11 @@ MainWindow::MainWindow(QWidget *parent)
 
   initButtons();
 
-  m_player->play();
-
   m_musicPath = "./asserts/";
   loadAppointMusicFolder(m_musicPath);
+
+  // play the first music and load its lyric
+  startPlayMusic();
 
   // setup random number seed.
   srand(time(NULL));
@@ -97,6 +104,12 @@ void MainWindow::initButtons() {
   ui->musicList->setStyleSheet(
       "QListWidget { border: none; border-radius: 4px; background-color: "
       "rgba(255, 255, 255, 0.8); }");
+
+  ui->lyricList->setStyleSheet(
+      "QListWidget { border: none; border-radius: 4px; background-color: "
+      "rgba(255, 255, 255, 0.8); }"
+      "QListWidget::item { color: black; padding: 2px; }"
+      "QListWidget::item:selected { color: blue; background: rgba(0,0,255,0.1); }");
 
   /// init music list visibility as hidden.
   ui->musicList->hide();
@@ -219,6 +232,10 @@ void MainWindow::startPlayMusic() {
 
   m_player->setSource(QUrl::fromLocalFile(musicAbsolutePath));
   handlePlaySlot();
+
+  // load corresponding lyric file
+  QString lyricPath = m_musicPath + musicName + ".lrc";
+  loadMusicLyric(lyricPath);
 }
 
 void MainWindow::handleMusicListSlot() {
@@ -303,6 +320,86 @@ void MainWindow::setSongItem(SongItem *songItem, const QString &musicName,
   songItem->setDuration(durationTime.toString("mm:ss"));
 }
 
+void MainWindow::loadMusicLyric(const QString &musicLyric) {
+    // clear previous lyrics
+    ui->lyricList->clear();
+    m_lyricInfo.clear();
+
+    qDebug() << "loading lyric file:" << musicLyric << Qt::endl;
+    
+    QFile file(musicLyric);
+
+    // open lyric file as readonly
+    if (file.open(QIODevice::ReadOnly) == false) {
+        // lyric file may not exist, not an error
+        return;
+    }
+
+    // add leading empty lines for scroll padding
+    for (int i = 0; i < LYRIC_LINE; ++i) {
+        ui->lyricList->addItem("");
+    }
+
+    int lineCnt = LYRIC_LINE;
+
+    // read lyric file line by line
+    while (file.atEnd() == false) {
+        QByteArray lineBuffer = file.readLine();
+
+        loadLyricMap(lineBuffer.constData(), lineCnt);
+        lineCnt++;
+        qDebug() << "lineBuffer:" << lineBuffer << Qt::endl;
+    }
+
+    // add trailing empty lines for scroll padding
+    for (int i = 0; i < LYRIC_LINE; ++i) {
+        ui->lyricList->addItem("");
+    }
+
+    // close the file
+    file.close();
+}
+
+void MainWindow::loadLyricMap(const char *buffer, int count) {
+    QString lineData = QString::fromUtf8(buffer).trimmed();
+    qDebug() << "lineData:" << lineData << Qt::endl;
+
+    // skip empty lines and metadata lines like [ar:], [ti:], [al:], etc.
+    if (lineData.isEmpty() || !lineData.startsWith("[0") && !lineData.startsWith("[1")) {
+        return;
+    }
+
+    QStringList lyric = lineData.split(']');
+
+    QString lyricTime;
+    QString lyricText;
+    if (lyric.size() >= 2) {
+        lyricTime = lyric[0].mid(1);  // extract like "00:26.79"
+        lyricText = lyric[1].trimmed();
+    } else {
+        return;
+    }
+
+    // parse time in LRC format "mm:ss.xx"
+    auto time = QTime::fromString(lyricTime, "mm:ss.zz");
+    if (!time.isValid()) {
+        return;
+    }
+    int msec = time.msecsSinceStartOfDay();
+
+    // skip lines with empty lyric text (instrumental pauses)
+    if (lyricText.isEmpty()) {
+        return;
+    }
+
+    // lyricInfo:
+    m_lyricInfo[msec] = {lyricText, count};
+
+    // add lyric text to lyric list
+    ui->lyricList->addItem(lyricText);
+    return;
+}
+
 void MainWindow::loadAppointMusicFolder(const QString &filepath) {
   QDir dir(filepath);
   if (dir.exists() == false) {
@@ -317,7 +414,8 @@ void MainWindow::loadAppointMusicFolder(const QString &filepath) {
       QString filePath = m_musicPath + file.baseName();
       
       auto *listItem = new QListWidgetItem(ui->musicList);
-      
+      listItem->setText(file.baseName());  // store music name for retrieval
+
       // setup song item
       auto *songItem = new SongItem(this);
       setSongItem(songItem, file.baseName(), filePath);

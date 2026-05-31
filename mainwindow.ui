@@ -134,6 +134,16 @@
      </item>
     </layout>
    </widget>
+   <widget class="QListWidget" name="lyricList">
+    <property name="geometry">
+     <rect>
+      <x>220</x>
+      <y>10</y>
+      <width>256</width>
+      <height>321</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

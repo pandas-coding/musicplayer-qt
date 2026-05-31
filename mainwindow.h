@@ -7,6 +7,7 @@
 #include <QMediaPlayer>
 #include <QPushButton>
 #include <QUrl>
+#include <QPair>
 #include <qhashfunctions.h>
 #include <qobject.h>
 #include <qwidget.h>
@@ -54,6 +55,10 @@ private:
   // setup music item
   void setSongItem(SongItem *songItem, const QString &musicName,
                    const QString &musicPath);
+  // load music lyric
+  void loadMusicLyric(const QString &musicLyric);
+  // load music lyric 
+  void loadLyricMap(const char* buffer, int lineCnt);
 
 private:
   Ui::MainWindow *ui;
@@ -64,5 +69,7 @@ private:
   QString m_musicPath;
   // music list  visibility
   bool m_musicListVisible;
+  // lyric infos: <lyric_time, <lyric_text, lyric_line>>
+  std::map<int, QPair<QString, int>> m_lyricInfo;
 };
 #endif // MAINWINDOW_H
