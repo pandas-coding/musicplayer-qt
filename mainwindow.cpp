@@ -31,6 +31,7 @@
 #include <qlogging.h>
 #include <qmediaplayer.h>
 #include <qmessagebox.h>
+#include <qnamespace.h>
 #include <qobject.h>
 #include <qpicture.h>
 #include <qpixmap.h>
@@ -40,7 +41,6 @@
 #include <qslider.h>
 #include <qurl.h>
 #include <qwidget.h>
-#include <string>
 #include <time.h>
 
 // initieal music lyric empty lines
@@ -135,6 +135,15 @@ void MainWindow::initButtons() {
   // handle drag progress bar
   connect(ui->progressBar, &QSlider::sliderMoved, m_player,
           &QMediaPlayer::setPosition);
+
+  // double click music list item
+  connect(ui->musicList, &QListWidget::itemDoubleClicked, this,
+          &MainWindow::startPlayMusic);
+
+  // hide horizontal scroll bar
+  ui->lyricList->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  // hide vertical scroll bar
+  ui->lyricList->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 }
 
 void MainWindow::handlePlaySlot() {

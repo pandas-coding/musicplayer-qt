@@ -143,6 +143,24 @@
       <height>321</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">QListWidget {
+	background-color: transparent;
+	border: none;
+}
+
+QListWidget::item {
+	background-color: transparent;
+	border: none;
+	color: gray;
+}
+
+QListWidget::item::selected {
+	background-color: transparent;
+	border: none;
+	color: white;
+}</string>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
